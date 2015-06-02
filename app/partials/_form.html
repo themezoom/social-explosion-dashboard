@@ -1,0 +1,77 @@
+<div class="form-group">
+  <label for="url" class="col-sm-2 control-label">URL</label>
+  <div class="col-sm-10">
+    <input type="text" ng-model="feed.url" class="form-control" id="url" placeholder="RSS URL" value="{{feed.url}}"/>
+  </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-md-3 column" ng-repeat="outlet in outlets">
+      <div class="panel panel-primary">
+        <div class="panel-heading" ng-class="{ 'disabled-panel' : outlet.status == 'disabled' }">
+          <h3 class="panel-title">
+            {{outlet.name}}
+          </h3>
+          <div class="checkbox">
+            <input
+              type="checkbox"
+              value="{{outlet.name}}"
+              ng-checked="outlet.status == 'enabled'"
+              ng-click="toggleSelection(outlet);"> Enabled
+          </div>
+        </div>
+        <div class="panel-body">
+          
+          <div class="btn-group">
+            <div id="collectiondropDown" class="btn btn-default" id="dLabel" role="button" data-toggle="dropdown" data-target="#" ng-disabled="outlet.status == 'disabled'">
+              <span>{{ outlet.freqSelected || 'Frequency' }}</span>      
+            </div>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+              <span class="caret"></span>
+            </button>
+            
+            <ul class="dropdown-menu">
+              <li role="presentation" ng-if="outlet.freqSelected">
+                <a role="menuitem" href="#">Frequency</a>
+              </li>
+              <li role="presentation" class="divider" ng-if="outlet.freqSelected"></li>
+              
+              <li ng-repeat="option in dropDownOptions" class="{{outlet.status}}">
+                <a href="#" ng-click="selectFrequency(outlet, option)">{{option}}</a>
+              </li>
+            </ul>
+            
+          </div>
+          
+          <p>&nbsp</p>
+          <div class="btn-group">
+            <div id="collectiondropDown" class="btn btn-default" id="dLabel" role="button" data-toggle="dropdown" data-target="#" ng-disabled="outlets[key].status == 'disabled'">
+              <span>{{ outlet.durationSelected || 'Duration' }}</span>      
+            </div>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+              <span class="caret"></span>
+            </button>
+            
+            <ul class="dropdown-menu">
+              <li role="presentation" ng-if="outlet.durationSelected">
+                <a role="menuitem" href="#">Duration</a>
+              </li>
+              <li role="presentation" class="divider" ng-if="outlet.durationSelected"></li>
+              
+              <li ng-repeat="option in dropDownOptions" class="{{outlet.status}}">
+                <a href="#" ng-click="selectDuration(outlet, option)">{{option}}</a>
+              </li>
+            </ul>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<div class="form-group">
+  <div class="col-sm-offset-2 col-sm-10">
+    <input type="submit" class="btn btn-primary" ng-click="addRssFeed()" value="Create"/>
+  </div>
+</div>
