@@ -28,7 +28,6 @@
     $scope.rssFeeds = feeds;
     
     $scope.toggleFeed = function(feed) {
-      console.log(feed.status);
       
       if (feed.status == 'deactivated') {
         var update = feed.$update({ token: user.token, id: feed.id, rss_feed: { active: true } });
