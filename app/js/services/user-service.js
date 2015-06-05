@@ -2,8 +2,8 @@
   'use strict';
   
   //Make URL into a config
-  function UserService($resource) {
-    return $resource('http://localhost:3002/v2/users/:token', { id: "@token" },
+  function UserService($resource, API) {
+    return $resource(API.baseUrl + '/v2/users/:token', { id: "@token" },
       {
         'create':  { method: 'POST' },
         'index':   { method: 'GET', isArray: true },
