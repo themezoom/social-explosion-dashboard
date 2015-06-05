@@ -47,14 +47,14 @@
     };
   })
   
-  .controller('NewRssFeedController', function (user, outletsService, $scope, RssFeedService, $stateParams, $state) {
+  .controller('NewRssFeedController', function (user, outletsService, $scope, RssFeedService, $stateParams, $state, FeedParserService) {
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
     };
     
     $scope.outlets = outletsService.outlets;
-    
     $scope.feed = new RssFeedService();
+    $scope.totals = 0;
     
     $scope.addRssFeed = function() {
       var settings = $scope.outlets.map(function (outlet) {
@@ -78,8 +78,44 @@
       'High'
     ];
     
+    $scope.calculate = function() {
+      angular.forEach($scope.outlets, function(value, key) {
+        if(value.freqValue != null && value.durationValue != null && value.status != 'disabled') {
+          var hours = value.durationValue * 24;
+          var posts = Math.round(hours / value.freqValue);
+          var postsPerMonth = parseInt($scope.feedCount);
+          // debugger;
+          if($scope.feedCount == null) {
+            value.monthlyPosts = 0;
+            value.perPost = 0;
+          } else {
+            value.monthlyPosts = posts * postsPerMonth;
+            value.perPost = posts;
+          };
+        };
+      });
+       
+      $scope.addProductTotals();
+    };
+    
+    $scope.addProductTotals = function() {
+      var totals = 0;
+      
+      angular.forEach($scope.outlets, function(value, key) {
+        // debugger;
+        if(value.monthlyPosts != null && value.status != 'disabled') {
+          totals += value.monthlyPosts;
+        } else if(value.monthlyPosts != null && value.status == 'disabled') {
+          totals - value.monthlyPosts;
+        }
+      });
+      
+      $scope.totals = totals;
+    };
+    
     $scope.selectFrequency = function(outlet, option) {
       $scope.setFrequency(outlet, option);
+      $scope.calculate();
     };
     
     $scope.setFrequency = function(outlet, value) {
@@ -112,6 +148,7 @@
     
     $scope.selectDuration = function(outlet, option) {
       $scope.setDuration(outlet, option);
+      $scope.calculate();
     };
     
     $scope.setDuration = function(outlet, value){
@@ -137,5 +174,18 @@
       outlet.durationValue = val;
       outlet.durationSelected = value;
     };
+    
+    $scope.displayFooter = function(outlet){
+      return outlet.status == 'enabled' && outlet.freq != null && outlet.duration != null;
+    };
+    
+    
+    // RSS Feed Parsing
+    $scope.inputChanged = function() {
+      FeedParserService.parse($scope.feed.url).then(function(res){
+        if(res.data.responseStatus == 200) $scope.feedCount = res.data.responseData.feed.entries.length;
+      });
+    };
+    
   });
 })();
