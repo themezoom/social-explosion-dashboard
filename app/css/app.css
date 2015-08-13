@@ -1,0 +1,18 @@
+li.list-li {
+  border-bottom: 1px solid #eee;
+  height: 35px;
+  margin-bottom:10px;
+}
+
+li.list-li span.right-item {
+  float:right;
+  background-color: #337ab7;
+  padding: 7px; 
+  color: white;
+  font-weight: lighter;
+  font-size:0.85em;
+}
+
+li.list-li span.left-item {
+  float:left; margin: 3px;
+}
