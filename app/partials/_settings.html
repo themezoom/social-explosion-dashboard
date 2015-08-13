@@ -1,0 +1,76 @@
+<div class="row clearfix">
+    <div class="col-md-3 column" ng-repeat="outlet in outlets">
+      <div class="panel panel-primary">
+        <div class="panel-heading" ng-class="{ 'disabled-panel' : outlet.status == 'disabled' }">
+          <h3 class="panel-title">
+            {{outlet.name}}
+          </h3>
+          <div class="checkbox" style="padding-left:22px;">
+            <input
+              type="checkbox"
+              value="{{outlet.name}}"
+              ng-model="outlet.enabled"
+              ng-click="toggleSelection(outlet)"> Enabled
+          </div>
+        </div>
+        <div class="panel-body">
+          
+          <div class="btn-group">
+            Frequency:
+            <select class="selectpicker" 
+                    ng-options="option for option in dropDownOptions" 
+                    ng-disabled="!outlet.enabled"
+                    ng-model="outlet.freqSelected"
+                    ng-change="selectFrequency(outlet)">
+            </select>
+          </div>
+          
+          <p>&nbsp</p>
+          <div class="btn-group">            
+            Duration:
+            <select class="selectpicker" 
+                    ng-options="option for option in dropDownOptions" 
+                    ng-disabled="!outlet.enabled"
+                    ng-model="outlet.durationSelected"
+                    ng-change="selectDuration(outlet)">
+            </select>
+          </div>
+        </div>
+        
+        <div class="panel-footer">
+          <span ng-if="outlet.display" 
+                ng-hide="!outlet.enabled">
+            <div class="checkbox" style="padding-left:22px;" ng-if="displayDefaultCheckbox">
+              <input
+                type="checkbox"
+                value="set_as_default"
+                ng-click="setDefault(outlet)"> Set frequency and duration as default for this outlet
+            </div>
+            <br />
+            <strong>Promotions:</strong> <br />
+            Every {{outlet.freq}} hours for {{outlet.duration}} days. 
+            <span ng-if="displayCalculations">Around <strong>{{outlet.monthlyPosts | number}}</strong> promotions in 30 days at {{outlet.perPost}} promotions per post.
+            </span>
+          </span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row margined col-md-offset-4 animate-if" ng-if="totals > 0">
+  <div class="col-md-10 column">
+    Total overall: <strong>{{totals | number}}</strong> promotions for this feed
+    <h3 ng-if="suggestedPackage">Package: {{suggestedPackage.name}} - {{suggestedPackage.cost | currency }}/month </h3>
+    <h3 ng-if="exceeded">Please <a href="https://domainwebstudio.zendesk.com/home">contact us</a> to inquire about larger packages</h3>
+    <div ng-if="suggestedPackage">
+      <form name="PaymentForm" method="post" action="http://www.wpsocialexplosion.com/dap/paypalCoupon.php" target="_blank">
+      <input type="hidden" name="cmd" value="_xclick-subscriptions"/>
+      <input type="hidden" name="currency_code" value="USD" />
+      <input type="hidden" name="item_number" value="{{suggestedPackage.dap_product_id}}" />
+      <div><input type="image" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" border="0" name="submit" alt="Make payments with PayPal - its fast, free and secure!" /></div>
+      </form>
+    </div>
+  </div>
+</div>
