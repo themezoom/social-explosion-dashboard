@@ -1,18 +1,19 @@
 (function() {
   'use strict';
-
+  // Public URL: http://dashboard.wpsocialexplosion.com/
   angular
     .module('socialExplosionAdmin', [
       'ui.router',
       'ngResource',
       'ui.bootstrap',
-      'LocalStorageModule'
+      'LocalStorageModule',
+      'ngLodash'
     ]);
 
   angular
     .module('socialExplosionAdmin')
     .constant("API", {
-        "baseUrl": "http://localhost:3002"
+        "baseUrl": "http://api.wpsocialexplosion.com"
       })
     .config(function($stateProvider, $urlRouterProvider, $httpProvider, localStorageServiceProvider) {
       //Reset headers to avoid OPTIONS request (aka preflight), retarded
@@ -47,7 +48,7 @@
         .state('rssFeeds', {
           url: '/rss_feeds',
           templateUrl: 'rss_feeds/index.html',
-          controller: 'RssFeedController',
+          controller: 'RssFeedsController',
           resolve: {
             user: function(localStorageService) {
               return localStorageService.get('user');
@@ -58,6 +59,26 @@
           url: '/rss_feeds/new/:id',
           templateUrl: 'rss_feeds/new.html',
           controller: 'NewRssFeedController',
+          resolve: {
+            user: function(localStorageService) {
+              return localStorageService.get('user');
+            }
+          }
+        })
+        .state('editRssFeed', {
+          url: '/rss_feeds/edit/:id',
+          templateUrl: 'rss_feeds/edit.html',
+          controller: 'EditRssFeedController',
+          resolve: {
+            user: function(localStorageService) {
+              return localStorageService.get('user');
+            }
+          }
+        })
+        .state('showRssFeed', {
+          url: '/rss_feeds/show/:id',
+          templateUrl: 'rss_feeds/show.html',
+          controller: 'ShowRssFeedController',
           resolve: {
             user: function(localStorageService) {
               return localStorageService.get('user');
