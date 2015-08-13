@@ -1,0 +1,110 @@
+<div class="page-header">
+  <h1>{{feed.name}} <small><strong>URL:</strong> {{feed.truncated_url}}</small></h1>
+</div>
+<div class="alert " style="padding-bottom:20px;" role="alert" feed-status>
+  <strong>FEED STATUS:</strong> {{feed.status}}<br/>
+  <small ng-if="feed.status == 'paused'">Your feed was unreachable when we last attempted to parse it so it is currently paused. We will attempt to parse it every 12 hours.</small>
+  <small ng-if="feed.status == 'active'">Your feed is reachable and being parsed hourly.</small>
+  <small ng-if="feed.status == 'deactivated'">Your feed was deactivated on {{feed.deactivated_on | date:'MM/dd/yyyy @ h:mma'}}.</small>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Parse Info:</h3>
+      </div>
+      <div class="panel-body">
+        <span ng-if="feed.parsed_on">
+          <ul style="list-style-type: none; padding-left:0;">
+            <li class="list-li">
+              <span class="left-item">Last parsed <span data-toggle="tooltip" title="The last time our system read and parsed the feed">(?)</span>:</span>
+              <span class="right-item">{{feed.parsed_on | date:'MM/dd/yyyy @ h:mma'}}</span>
+            </li>
+            <li class="list-li">
+              <span class="left-item">Items found when last parsed <span data-toggle="tooltip" title="How many new items were found the last time the feed was parsed">(?)</span>:</span>
+              <span class="right-item">{{feed.last_parse_count}}</span>
+            </li>
+            <li class="list-li">
+              <span class="left-item">Items promoted since last parse <span data-toggle="tooltip" title="How many items have been scheduled for promotion since last parse">(?)</span>:</span>
+              <span class="right-item">{{feed.promotions_since_last_parse}}</span>
+            </li>
+            <li class="list-li">
+              <span class="left-item">Total items promoted from feed <span data-toggle="tooltip" title="The total amount of promotions for the entire feed over time">(?)</span>:</span>
+              <span class="right-item">{{feed.promotions}}</span>
+            </li>
+          </ul>
+        </span>
+        <span ng-if="!feed.parsed_on">
+          Feed has not been parsed yet.
+        </span>
+      </div>
+      
+      <div class="panel-heading">
+        <h3 class="panel-title">Settings:</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-tabs" data-tabs="tabs">
+          <li data-toggle="tab" ng-repeat-start="setting in feed.settings" role="presentation" ng-if="$first" ng-attr-class="{{$first && 'active'}}">
+            <a href="" ng-click="toggleActiveSetting(setting.name)">{{setting.name}}</a>
+          </li>
+          <li data-toggle="tab" ng-repeat-end role="presentation" ng-if="!$first">
+            <a href="" ng-click="toggleActiveSetting(setting.name)">{{setting.name}}</a>
+          </li>
+        </ul>
+        <br />
+        
+        <div class="tab-content">
+          <div elem-ready="addToolTip()" ng-repeat-start="setting in feed.settings" ng-if="$first" ng-attr-class="{{$first && 'active tab-pane'}}" id="{{setting.name}}">
+            <div ng-include="'partials/_freq-duration.html'"></div>
+          </div>
+          
+          <div ng-repeat-end ng-if="!$first" class="tab-pane" id="{{setting.name}}">
+            <div ng-include="'partials/_freq-duration.html'"></div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <div class="panel-heading">
+        <h3 class="panel-title">Actions:</h3>
+      </div>
+      <div class="panel-body">
+        <span title="{{title}}" data-toggle="tooltip" placement="top" style="cursor: help;">
+          <button type="button" class="{{actionButtonClass}}" ng-click="toggleFeed(feed)">
+            <i class="glyphicon " data-action='activate' feed-button>
+            </i> 
+            <span ng-if="feed.status == 'active'">Deactivate</span>
+            <span ng-if="feed.status == 'paused'">Deactivate</span>
+            <span ng-if="feed.status == 'deactivated'">Activate</span>
+          </button>
+        </span>
+        
+        <span title="Click to modify the feed's promotion settings" data-toggle="tooltip" placement="top" style="cursor: help;">
+          <a ui-sref="editRssFeed({id: feed.id})">
+            <button type="button" class="btn btn-sm btn-info">
+              <i class="glyphicon glyphicon-pencil">
+              </i> 
+              Edit
+            </button>
+          </a>
+        </span>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="col-md-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Promotions:</h3>
+      </div>
+      <div class="panel-body">
+        <div id="chartContainer">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
