@@ -4,7 +4,7 @@ angular
     return {
       link: function (scope, element, attrs) {
         scope.$watch('feed', function(newValue, oldValue) {
-          var classAttributes = (scope.feed.status == 'active') ? 'glyphicon glyphicon-remove' : 'glyphicon glyphicon-play';
+          var classAttributes = BootStrapService.icon(scope.feed.status);
           element.removeClass(element.attr('class'));
           element.addClass(classAttributes);  
         }, true);
