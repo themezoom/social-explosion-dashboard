@@ -1,107 +1,37 @@
 <div class="form-group">
-  <label for="url" class="col-sm-2 control-label">URL</label>
-  <div class="col-sm-10">
-    <input type="text" ng-model="feed.url" class="form-control" id="url" placeholder="RSS URL" value="{{feed.url}}"ng-change="inputChanged()" ng-model-options="{ debounce:1000 }" />
-  </div>
-</div>
-
-<div class="row clearfix">
-  <div class="col-md-4">&nbsp;</div>
-  <div class="col-md-4">&nbsp;</div>
-  <div class="col-md-4"><strong ng-if="feedCount > 0">Number of posts in feed: {{feedCount}}</strong></div>
-  <div class="col-md-4">&nbsp;</div>
-</div>
-
-<div class="row clearfix">
-    <div class="col-md-3 column" ng-repeat="outlet in outlets">
-      <div class="panel panel-primary">
-        <div class="panel-heading" ng-class="{ 'disabled-panel' : outlet.status == 'disabled' }">
-          <h3 class="panel-title">
-            {{outlet.name}}
-          </h3>
-          <div class="checkbox" style="padding-left:22px;">
-            <input
-              type="checkbox"
-              value="{{outlet.name}}"
-              ng-checked="outlet.status == 'enabled'"
-              ng-click="toggleSelection(outlet); addProductTotals()"> Enabled
-          </div>
-        </div>
-        <div class="panel-body">
-          
-          <div class="btn-group">
-            <div id="collectiondropDown" class="btn btn-default" id="dLabel" role="button" data-toggle="dropdown" data-target="#" ng-disabled="outlet.status == 'disabled'">
-              <span>{{ outlet.freqSelected || 'Frequency' }}</span>      
-            </div>
-            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-              <span class="caret"></span>
-            </button>
-            
-            <ul class="dropdown-menu">
-              <li role="presentation" ng-if="outlet.freqSelected">
-                <a role="menuitem" href="#">Frequency</a>
-              </li>
-              <li role="presentation" class="divider" ng-if="outlet.freqSelected"></li>
-              
-              <li ng-repeat="option in dropDownOptions" class="{{outlet.status}}">
-                <a href="#" ng-click="selectFrequency(outlet, option)">{{option}}</a>
-              </li>
-            </ul>
-            
-          </div>
-          
-          <p>&nbsp</p>
-          <div class="btn-group">
-            <div id="collectiondropDown" class="btn btn-default" id="dLabel" role="button" data-toggle="dropdown" data-target="#" ng-disabled="outlet.status == 'disabled'">
-              <span>{{ outlet.durationSelected || 'Duration' }}</span>      
-            </div>
-            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-              <span class="caret"></span>
-            </button>
-            
-            <ul class="dropdown-menu">
-              <li role="presentation" ng-if="outlet.durationSelected">
-                <a role="menuitem" href="#">Duration</a>
-              </li>
-              <li role="presentation" class="divider" ng-if="outlet.durationSelected"></li>
-              
-              <li ng-repeat="option in dropDownOptions" class="{{outlet.status}}">
-                <a href="#" ng-click="selectDuration(outlet, option)">{{option}}</a>
-              </li>
-            </ul>
-          
-          </div>
-        </div>
-        
-        <div class="panel-footer">
-          <span ng-if="displayFooter(outlet)">
-            Every {{outlet.freq}} hours for {{outlet.duration}} days. Around <strong>{{outlet.monthlyPosts | number}}</strong> promotions in 30 days at {{outlet.perPost}} promotions per post.
-          </span>
-        </div>
-        
-      </div>
+  <div class="row">
+    <div class="col-sm-3 text-right">
+      <label for="url" class="control-label">RSS Feed URL</label>
+    </div>
+    <div class="col-sm-7">
+      <input type="text" ng-model="feed.url" class="form-control" id="url" placeholder="Example: http://www.yoursite.com/feed" value="{{feed.url}}"ng-change="inputChanged()" ng-model-options="{ debounce:1000 }" />
     </div>
   </div>
-</div>
-
-<div class="row margined col-md-offset-4 animate-if" ng-if="totals > 0">
-  <div class="col-md-10 column">
-    Total overall: <strong>{{totals | number}}</strong> promotions for this feed
-    <h3 ng-if="suggestedPackage">Package: {{suggestedPackage.name}} - {{suggestedPackage.cost | currency }}/month </h3>
-    <h3 ng-if="exceeded">Please <a href="https://domainwebstudio.zendesk.com/home">contact us</a> to inquire about larger packages</h3>
-    <div ng-if="suggestedPackage">
-      <form name="PaymentForm" method="post" action="http://www.wpsocialexplosion.com/dap/paypalCoupon.php" target="_blank">
-      <input type="hidden" name="cmd" value="_xclick-subscriptions"/>
-      <input type="hidden" name="currency_code" value="USD" />
-      <input type="hidden" name="item_number" value="{{suggestedPackage.dap_product_id}}" />
-      <div><input type="image" src="https://www.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" border="0" name="submit" alt="Make payments with PayPal - its fast, free and secure!" /></div>
-      </form>
-    </div>
-  </div>
-</div>
   
-<div class="form-group">
-  <div class="pull-right">
-    <input type="submit" class="btn btn-primary" ng-click="addRssFeed()" value="Create"/>
+  <div class="row">
+    <div class="col-sm-3 text-right">
+      <label for="title" class="control-label">RSS Feed Name</label>
+    </div>
+    <div class="col-sm-7">
+      <input type="text" ng-model="feed.name" class="form-control" id="title" placeholder="Feed Name" value="{{feedName}}" />
+    </div>
   </div>
 </div>
+
+<div class="row clearfix">
+  <div class="col-md-4">&nbsp;</div>
+  <div class="col-md-4">&nbsp;</div>
+  <div class="col-md-4">
+    <div ng-if="feedOk">
+      <strong>Number of posts in feed: {{feedCount}} </strong>
+      <div class="glyphicon glyphicon-ok-sign" style="color:green;"></div>
+    </div>
+    <div ng-show="feedBroken">
+      Can not parse feed!
+      <div class="glyphicon glyphicon-exclamation-sign" style="color:red;"></div>
+    </div>
+  </div>
+  <div class="col-md-4">&nbsp;</div>
+</div>
+
+<div ng-include="'partials/_settings.html'"></div>
