@@ -1,7 +1,6 @@
 (function() {
   'use strict';
   
-  //Make URL into a config
   function RssFeedService($resource, API) {
     return $resource(API.baseUrl + '/v2/users/:token/rss_feeds/:id', {},
       {
