@@ -1,3 +1,23 @@
+<div class="page-header">
+  <h1>Editing: {{feed.name}} <small><strong>URL:</strong> {{feed.truncated_url}}</small></h1>
+</div>
+
+<div ng-if="notSaved" style="padding-bottom:20px;" role="alert" class="alert alert-warning">
+  <small>Note: Your setting changes will only effect future promotions.</small>
+</div>
+<div ng-if="saved" style="padding-bottom:20px;" role="alert" class="alert alert-success">
+  <i class="glyphicon glyphicon-ok-circle">
+  </i>
+  <small>Your setting have been saved.</small>
+</div>
+
 <form class="form-horizontal" role="form" ng-submit="updateRssFeed()" novalidate>
-  <div ng-include="'partials/_form.html'"></div>
+  <div ng-include="'partials/_settings.html'"></div>
+  
+  
+  <div class="form-group">
+    <div class="pull-right">
+      <input type="submit" class="btn btn-primary" ng-click="updateRssFeed()" value="Update"/>
+    </div>
+  </div>
 </form>
