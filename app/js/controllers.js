@@ -17,18 +17,19 @@
     })
   
   
-  //INDEX
+  //RSS FEEDS INDEX
   .controller('RssFeedsController', function (user, $state, $scope, RssFeedService, localStorageService) {
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
     };
     
-    var feeds = RssFeedService.query({ token: user.token }, function() {
+    $scope.user = user;
+    
+    var feeds = RssFeedService.query({ token: user.token }, function(data) {
       $('[data-toggle="tooltip"]').tooltip();
     });
     
     $scope.rssFeeds = feeds;
-    $scope.user = user;
     
     $scope.toggleFeed = function(feed) {
       
@@ -47,17 +48,23 @@
         return 'warning';
       };
     };
+    
+    $scope.addToolTip = function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    };
   })
   
   
   //SHOW
-  .controller('ShowRssFeedController', function (user, $scope, $stateParams, RssFeedService, RssPromotionService, BootStrapService){
+  .controller('ShowRssFeedController', function (user, $scope, $filter, $stateParams, RssFeedService, RssPromotionService, BootStrapService, RssFeedPostsService){
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
     };
     
+    $scope.user = user;
+    
     var data = RssPromotionService.query({ token: user.token, id: $stateParams.id }, function(feed) {
-      console.log(feed);
+      
     });
     
     var feed = RssFeedService.get({ token: user.token, id: $stateParams.id }, function(feed) {      
@@ -83,6 +90,11 @@
     
     $scope.feed = feed;
     
+    var posts = RssFeedPostsService.query({ token: user.token, rss_feed_id: $stateParams.id }, function(posts) {
+      console.log(posts);
+    });
+    $scope.posts = posts;
+    
     $scope.addToolTip = function() {
       $('[data-toggle="tooltip"]').tooltip();
     };
@@ -103,13 +115,20 @@
       $('#' + id).addClass('active');
     };
     
+    
+    // Search/Sort
+    $scope.sortType     = 'created_at'; // set the default sort type
+    $scope.sortReverse  = true;  // set the default sort order
+    
   })
 
   // EDIT
   .controller('EditRssFeedController', function (user, $state, $scope, $filter, $stateParams, RssFeedService, outletsService, lodash) {
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
-    };    
+    };
+    
+    $scope.user = user;
     
     $scope.outlets = outletsService.outlets;
     $scope.lodash = lodash;
@@ -169,11 +188,13 @@
   })
   
   
-  //NEW
+  // NEW
   .controller('NewRssFeedController', function (user, outletsService, $scope, RssFeedService, $stateParams, $state, FeedParserService, localStorageService, lodash) {
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
     };
+    
+    $scope.user = user;
     
     $scope.outlets = outletsService.outlets;
     $scope.feed = new RssFeedService();
@@ -376,5 +397,77 @@
       $scope.calculate();
     };    
     
+  })
+
+  // RSSPOSTS
+  .controller('RssFeedPostsController', function (user, $scope, $stateParams, RssFeedPostsService, FeedPostsPromotionsService, RssFeedService) {
+    if (user == null) {
+      $state.go('login'); // There has to be a better way to do this
+    };
+    
+    $scope.user = user;
+    $scope.feed_id = $stateParams.feed_id;
+    
+    var feed = RssFeedService.get({ token: user.token, id: $stateParams.feed_id }, function(feed) {
+    });
+    $scope.feed = feed;
+    
+    var post = RssFeedPostsService.show({ token: user.token, rss_feed_id: $stateParams.feed_id, id: $stateParams.id }, function(post) {
+      console.log(post);
+    });
+    $scope.post = post;
+    
+    $scope.addToolTip = function() {
+      $('[data-toggle="tooltip"]').tooltip();
+    };
+    
+    $scope.rePromote = function() {
+      FeedPostsPromotionsService.create({ token: user.token, rss_feed_id: $stateParams.feed_id, post_id: $stateParams.id }, function(post) {
+      $scope.success = true;
+    });
+    };
+  })
+  
+  // SCHEDULED POSTS INDEX
+  .controller('ScheduledPostsController', function (user, $scope, $stateParams, PostsService, PostPromotionsService) {
+    if (user == null) {
+      $state.go('login'); // There has to be a better way to do this
+    };
+    
+    $scope.user = user;
+    
+    var post = PostsService.show({ token: user.token, id: $stateParams.id }, function(post) {
+      $scope.noPromotions = post.promotions == 0;
+    });
+    $scope.post = post;
+    
+    
+    $scope.hasCredits = function() {
+      return $scope.user.credits > 0;
+    };
+    
+    $scope.rePromote = function() {
+      PostPromotionsService.create({ token: user.token, id: $stateParams.id }, function(post) {
+      $scope.success = true;
+    });
+    };
+  })
+  
+  // POSTS INDEX
+  .controller('PostsController', function (user, $scope, $state, PostsService) {
+    if (user == null) {
+      $state.go('login'); // There has to be a better way to do this
+    };
+    
+    $scope.user = user;
+    
+    var posts = PostsService.index({ token: user.token }, function(posts) {
+      console.log(posts);
+    });
+    $scope.posts = posts;
+    
+    $scope.colorize = function(size) {
+      if(size == 0) return 'danger';
+    };
   });
 })();
