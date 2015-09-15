@@ -16,3 +16,13 @@ li.list-li span.right-item {
 li.list-li span.left-item {
   float:left; margin: 3px;
 }
+
+.nav .breadcrumb {
+    margin: 0 7px;
+}
+@media (min-width: 768px) {
+    .nav .breadcrumb {
+        float: left;
+        margin: 7px 10px;
+    }
+}
