@@ -1,0 +1,103 @@
+<div ng-include="'partials/_credits.html'"></div>
+
+<div class="row" ng-if="success">
+  <div class="alert alert-success" style="padding-bottom:20px;">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    This post has been scheduled for re-promotion.
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header">
+      <h3>{{post.title}}</h3>
+      <h6>CREATED: {{post.created_at | date:'MM/dd/yyyy @ h:mma'}}</h6>
+    </div>
+    <div class="col-md-12" style="margin:20px;">
+      <p>{{post.body}}</p>
+      <p><a href="{{post.url}}" target="_blank">{{post.url}}</a></p>
+    </div> 
+  </div>
+</div>
+
+<div class="row">
+  <div class="page-header"></div>
+</div>
+
+<div class="panel-heading">
+  <h3 class="panel-title">Settings:</h3>
+</div>
+<div class="panel-body">
+  <ul class="nav nav-tabs" data-tabs="tabs">
+    <li data-toggle="tab" ng-repeat-start="setting in feed.settings" role="presentation" ng-if="$first" ng-attr-class="{{$first && 'active'}}">
+      <a href="" ng-click="toggleActiveSetting(setting.name)">{{setting.name}}</a>
+    </li>
+    <li data-toggle="tab" ng-repeat-end role="presentation" ng-if="!$first">
+      <a href="" ng-click="toggleActiveSetting(setting.name)">{{setting.name}}</a>
+    </li>
+  </ul>
+  <br />
+  
+  <div class="tab-content">
+    <div elem-ready="addToolTip()" ng-repeat-start="setting in feed.settings" ng-if="$first" ng-attr-class="{{$first && 'active tab-pane'}}" id="{{setting.name}}">
+      <div ng-include="'partials/_freq-duration.html'"></div>
+    </div>
+    
+    <div ng-repeat-end ng-if="!$first" class="tab-pane" id="{{setting.name}}">
+      <div ng-include="'partials/_freq-duration.html'"></div>
+    </div>
+    
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 ">
+    <span class="pull-right">
+      <button type="button" class="btn btn-sm btn-success" ng-click="rePromote({feed_id: post.rss_feed_id, post_id: post.id})" 
+            title="Click to re-promote this post (this will use credits)" data-toggle="tooltip" placement="top">
+        <i class="glyphicon glyphicon-refresh">
+        </i> Re-Promote
+      </button>
+    </span>
+  </div>
+</div>
+
+<div class="row" style="margin-top:12px;">
+  <div class="col-md-12">
+    <div class="panel panel-default">      
+      <div class="panel-heading">
+        <h3 class="panel-title">Promotions:</h3>
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table st-table="promotions" class="table table-condensed table-hover table-striped">
+            <thead>
+             <tr>
+                <th>Content</th>
+                <th>Created At</th>
+                <th>Published?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr elem-ready="addToolTip()" ng-repeat="promotion in post.promotions">
+                <td><strong>{{promotion.content}}</strong></td>
+                <td class="small">{{promotion.created_at | date:'MM/dd/yyyy @ h:mma'}}</td>
+                <td class="small">
+                  <span class="small badge" ng-if="promotion.published_on === null">No</span>
+                  <span class="small badge" ng-if="promotion.published_on !== null">Yes</span>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" class="text-center">
+                  <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

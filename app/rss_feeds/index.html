@@ -1,7 +1,12 @@
-<button class="btn btn-primary" type="button" disabled="disabled">
-  Credits Remaining <span class="badge">{{user.credits}}</span>
-</button>
-<button type="button" class="btn btn-success" onclick="location.href='http://www.wpsocialexplosion.com/plugin-download/';">Buy More Credits</button>
+<div ng-include="'partials/_credits.html'"></div>
+            
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header">
+      <h3>Rss Feeds </h3>
+    </div>
+  </div>
+</div>
 
 <div class="row">
   <div class="col-md-6">
@@ -38,7 +43,18 @@
         <td class="small">{{feed.deactivated_on | date:'MM/dd/yyyy'}}</td>
         <td class="small">{{feed.paused_on | date:'MM/dd/yyyy'}}</td>
         <td>{{feed.last_parse_count}}</td>
-        <td>{{feed.status}}</td>
+        <td elem-ready="addToolTip()" class="small">
+          {{feed.status}}
+          <span ng-if="feed.status == 'paused'">
+            <span title="Your feed was unreachable when we last attempted to parse it so it is currently paused. We will attempt to parse it every 12 hours" data-toggle="tooltip" placement="top" style="cursor: help;">(?)</span>
+          </span>
+          <span ng-if="feed.status == 'deactivated'">
+            <span title="Your feed was deactivated on {{feed.deactivated_on | date:'MM/dd/yyyy @ h:mma'}} click the feed details to re-activate" data-toggle="tooltip" placement="top" style="cursor: help;">(?)</span>
+          </span>
+          <span ng-if="feed.status == 'active'">
+            <span title="Your feed is reachable and being parsed hourly." data-toggle="tooltip" placement="top" style="cursor: help;">(?)</span>
+          </span>
+        </td>
         <td>
         <button type="button" class="btn btn-sm btn-primary" ui-sref="showRssFeed({id: feed.id})">
           <i class="glyphicon glyphicon-eye-open">
@@ -50,7 +66,7 @@
     <tfoot>
       <tr>
         <td colspan="5" class="text-center">
-          <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+          <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="3"></div>
         </td>
       </tr>
     </tfoot>
