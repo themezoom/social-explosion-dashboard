@@ -1,0 +1,10 @@
+<span title="{{title}}" data-toggle="tooltip" placement="top" style="cursor: help;">
+    <button type="button" class="btn btn-sm btn-danger" ng-click="toggleFeed(feed)">
+      <i class="glyphicon " data-action='activate' feed-button>
+      </i> 
+      <span ng-if="feed.status == 'active'">Deactivate</span>
+      <span ng-if="feed.status == 'paused'">Deactivate</span>
+      <span ng-if="feed.status == 'deactivated'">Activate</span>
+    </button>
+  </span>
+</div>

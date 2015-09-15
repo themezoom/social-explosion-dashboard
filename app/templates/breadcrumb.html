@@ -1,0 +1,10 @@
+<div class="container">
+  <ul class="nav navbar-nav navbar-right">
+    <ul class="breadcrumb list-inline">
+      <li ng-repeat="step in steps" ng-class="{active: $last}" ng-switch="$last || !!step.abstract">
+        <a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a>
+        <span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span>
+      </li>
+    </ul>
+  </ul>
+</div>
