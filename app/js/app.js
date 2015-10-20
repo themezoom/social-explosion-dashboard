@@ -9,13 +9,14 @@
       'LocalStorageModule',
       'ngLodash',
       'ngLoadingSpinner',
-      'ncy-angular-breadcrumb'
+      'ncy-angular-breadcrumb',
+      'smart-table'
     ]);
 
   angular
     .module('socialExplosionAdmin')
     .constant("API", {
-        "baseUrl": "http://api.wpsocialexplosion.com"
+        "baseUrl": "https://api.wpsocialexplosion.com"
       })
     .config(function($stateProvider, $urlRouterProvider, $httpProvider, localStorageServiceProvider, $breadcrumbProvider) {
       //Reset headers to avoid OPTIONS request (aka preflight), retarded
