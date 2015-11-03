@@ -25,11 +25,18 @@
     
     $scope.user = user;
     
-    var feeds = RssFeedService.query({ token: user.token }, function(data) {
+    $scope.rssFeeds = RssFeedService.query({ token: user.token }, function(data) {
+      
+    });
+    
+    $scope.showFeeds = false;
+    
+    $scope.rssFeeds.$promise.then(function (result) {
+      $scope.rssFeeds = result;
+      $scope.showFeeds = result.length > 1;
       $('[data-toggle="tooltip"]').tooltip();
     });
     
-    $scope.rssFeeds = feeds;
     
     $scope.toggleFeed = function(feed) {
       
@@ -91,9 +98,12 @@
     $scope.feed = feed;
     
     var posts = RssFeedPostsService.query({ token: user.token, rss_feed_id: $stateParams.id }, function(posts) {
-      console.log(posts);
     });
-    $scope.posts = posts;
+    
+    posts.$promise.then(function (result) {
+      $scope.posts = result;
+      $('[data-toggle="tooltip"]').tooltip();
+    });
     
     $scope.addToolTip = function() {
       $('[data-toggle="tooltip"]').tooltip();
@@ -447,27 +457,26 @@
     };
     
     $scope.rePromote = function() {
-      PostPromotionsService.create({ token: user.token, id: $stateParams.id }, function(post) {
+      PostPromotionsService.create({ token: user.token, post_id: $stateParams.id }, function(post) {
       $scope.success = true;
     });
     };
   })
   
   // POSTS INDEX
-  .controller('PostsController', function (user, $scope, $state, PostsService) {
+  .controller('PostsController', function (user, $scope, $state, PostsService, API) {
     if (user == null) {
       $state.go('login'); // There has to be a better way to do this
     };
     
-    $scope.user = user;
-    
-    var posts = PostsService.index({ token: user.token }, function(posts) {
-      console.log(posts);
-    });
-    $scope.posts = posts;
+    $scope.url = API.baseUrl + '/v2/users/' + user.token + '/posts/';
     
     $scope.colorize = function(size) {
       if(size == 0) return 'danger';
+    };
+    
+    $scope.filter = function(kind) {
+      $scope.url = $scope.url + '?filter_by=' + kind;
     };
   });
 })();
