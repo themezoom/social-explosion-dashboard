@@ -147,6 +147,19 @@
               return localStorageService.get('user');
             }
           }
+        })
+        .state('domains', {
+          url: '/domains',
+          templateUrl: 'domains/index.html',
+          controller: 'DomainsController',
+          ncyBreadcrumb: {
+            label: 'List of allowed domains '
+          },
+          resolve: {
+            user: function(localStorageService) {
+              return localStorageService.get('user');
+            }
+          }
         });
       });
 })();
