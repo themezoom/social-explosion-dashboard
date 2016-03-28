@@ -33,7 +33,7 @@
     
     $scope.rssFeeds.$promise.then(function (result) {
       $scope.rssFeeds = result;
-      $scope.showFeeds = result.length > 1;
+      $scope.showFeeds = result.length > 0;
       $('[data-toggle="tooltip"]').tooltip();
     });
     
@@ -469,14 +469,51 @@
       $state.go('login'); // There has to be a better way to do this
     };
     
-    $scope.url = API.baseUrl + '/v2/users/' + user.token + '/posts/';
+    var pages = $scope.pages = [];
+    $scope.user = user;
+    $scope.rowCollection = [];
+    $scope.displayed = [];
+    
+    $scope.itemsByPage = 15;
+    
+    PostsService.index({ token: user.token }, function(posts) {
+      $scope.rowCollection = posts;
+    });
+    
+    $scope.showPosts = $scope.rowCollection.length > 0;
+    
+    $scope.colorize = function(size) {
+      if(size == 0) return 'danger';
+    };
+  })
+  
+  // DOMAINS INDEX
+  .controller('DomainsController', function (user, $scope, $state, DomainsService, API) {
+    if (user == null) {
+      $state.go('login'); // There has to be a better way to do this
+    };
+    
+    var pages = $scope.pages = [];
+    $scope.user = user;
+    $scope.rowCollection = [];
+    $scope.displayed = [];
+    
+    $scope.itemsByPage = 15;
+    
+    DomainsService.index({ token: user.token }, function(domains) {
+      $scope.rowCollection = domains;
+      $scope.showDomains = domains.length > 0;
+    });
     
     $scope.colorize = function(size) {
       if(size == 0) return 'danger';
     };
     
-    $scope.filter = function(kind) {
-      $scope.url = $scope.url + '?filter_by=' + kind;
-    };
+    $scope.toggleSelection = function(domain) {
+      domain.$update({ token: user.token, id: domain.id, domain: { active: domain.active } }, function() {
+          $scope.notSaved = false;
+          $scope.saved = true;
+      });
+    }
   });
 })();
