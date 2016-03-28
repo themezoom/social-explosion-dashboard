@@ -35,18 +35,7 @@ angular
         "freqValue": null,
         "monthlyPosts": null,
         "perPost": null,
-        "display": false },
-      { "name": "Twitter",
-        "enabled": true, 
-        "duration": null, 
-        "durationSelected": null,
-        "durationValue": null,
-        "freq": null, 
-        "freqSelected": null, 
-        "freqValue": null,
-        "monthlyPosts": null,
-        "perPost": null,
-        "display": false } 
+        "display": false }
     ];
     
     var setDuration = function(outlet){
